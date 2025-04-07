@@ -1,3 +1,4 @@
+/* ==== General Styles ==== */
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f3f2e7;
@@ -6,6 +7,11 @@ body {
   color: #333;
 }
 
+h1, h2 {
+  margin-top: 0;
+}
+
+/* ==== Navigation Bar (grades page) ==== */
 nav {
   background-color: #e8e5d1;
   padding: 1rem 2rem;
@@ -34,6 +40,7 @@ nav a {
   font-weight: 500;
 }
 
+/* ==== Main Container (shared layout) ==== */
 .container {
   max-width: 900px;
   margin: 3rem auto;
@@ -43,6 +50,44 @@ nav a {
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
+/* ==== Home Page Layout ==== */
+.home-container {
+  max-width: 600px;
+  margin: 8rem auto;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.home-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.home-container p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #555;
+}
+
+.home-button {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: #ddd3b8;
+  color: black;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.home-button:hover {
+  background-color: #c8bca2;
+}
+
+/* ==== Semester/Subject Selector Section ==== */
 .selectors {
   display: flex;
   gap: 1rem;
@@ -63,6 +108,7 @@ select {
   border: 1px solid #ccc;
 }
 
+/* ==== Subject Entry Section ==== */
 .subject-input {
   display: flex;
   gap: 1rem;
@@ -73,6 +119,7 @@ select {
 .subject-input input {
   flex: 1;
   padding: 0.5rem;
+  font-size: 1rem;
 }
 
 .subject-input button {
@@ -81,8 +128,18 @@ select {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
 }
 
+.subject-input button:hover {
+  background-color: #c8bca2;
+}
+
+/* ==== Subject List ==== */
 #subjectList li {
   margin: 0.5rem 0;
+  padding: 0.4rem 0.6rem;
+  background-color: #f7f6f0;
+  border-radius: 4px;
+  border: 1px solid #ddd;
 }
