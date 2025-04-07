@@ -5,13 +5,14 @@ const contentArea = document.getElementById('contentArea');
 let currentYear = '';
 let currentSemester = '';
 
-// Populate years dynamically from current year to 2030
-const startYear = new Date().getFullYear();
-for (let year = startYear; year <= 2030; year++) {
+// Populate years from 2010 to 2035
+for (let year = 2010; year <= 2030; year++) {
   const option = document.createElement('option');
   option.value = year;
   option.textContent = year;
   yearSelect.appendChild(option);
+}
+
 }
 
 // Enable semester selection after choosing year
