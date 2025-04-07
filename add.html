@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Page Title</title>
+  <title>Add | Grade Tracker</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,8 +20,26 @@
   </nav>
 
   <div class="container">
-    <h2>Page Title</h2>
-    <p>This page is under construction 🚧</p>
+    <h2>Add Semester</h2>
+    <form id="semesterForm">
+      <label for="year">Year:</label>
+      <select id="year" required></select>
+
+      <label for="label">Semester Label:</label>
+      <input type="text" id="label" placeholder="e.g. Semester 1" required>
+
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" required>
+
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" required>
+
+      <button type="submit">Add Semester</button>
+    </form>
+
+    <div id="semesterList"></div>
   </div>
+
+  <script src="add.js"></script>
 </body>
 </html>
