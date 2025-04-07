@@ -1,80 +1,82 @@
+import { collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
 const container = document.getElementById('currentSemester');
 const today = new Date();
-let found = false;
 
-Object.keys(localStorage).forEach(key => {
-  const data = JSON.parse(localStorage.getItem(key));
-  if (!data || !data.startDate || !data.endDate || !data.classes) return;
+async function loadCurrentSemester() {
+  const snapshot = await getDocs(collection(db, "semesters"));
+  let found = false;
 
-  const start = new Date(data.startDate);
-  const end = new Date(data.endDate);
+  snapshot.forEach(docSnap => {
+    const key = docSnap.id;
+    const data = docSnap.data();
 
-  // Only show semester if today is within its date range
-  if (today >= start && today <= end) {
-    found = true;
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
 
-    const section = document.createElement('div');
-    section.innerHTML = `<h3>${key}</h3>`;
+    if (today >= start && today <= end) {
+      found = true;
+      renderSemester(key, data);
+    }
+  });
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = "Delete Semester";
-    deleteBtn.style.marginBottom = "1rem";
-    deleteBtn.onclick = () => {
-      if (confirm(`Delete semester ${key}?`)) {
-        localStorage.removeItem(key);
-        location.reload();
-      }
-    };
-    section.appendChild(deleteBtn);
-
-    Object.keys(data.classes).forEach(cls => {
-      const classBox = document.createElement('div');
-      classBox.innerHTML = `<h4>${cls}</h4>`;
-      const table = document.createElement('table');
-      table.style.width = '100%';
-      table.innerHTML = `
-        <tr>
-          <th>Assignment</th>
-          <th>Grade (%)</th>
-          <th>Weight (%)</th>
-          <th>Due</th>
-        </tr>
-      `;
-
-      data.classes[cls].assignments.forEach((a, idx) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${a.name}</td>
-          <td><input type="number" value="${a.grade}" min="0" max="100" data-class="${cls}" data-index="${idx}" data-field="grade"></td>
-          <td><input type="number" value="${a.weight}" min="0" max="100" data-class="${cls}" data-index="${idx}" data-field="weight"></td>
-          <td><input type="date" value="${a.due || ''}" data-class="${cls}" data-index="${idx}" data-field="due"></td>
-        `;
-        table.appendChild(row);
-      });
-
-      classBox.appendChild(table);
-      section.appendChild(classBox);
-    });
-
-    container.appendChild(section);
+  if (!found) {
+    container.innerHTML = "<p>No current semester found.</p>";
   }
-});
-
-if (!found) {
-  container.innerHTML = "<p>No current semester found.</p>";
 }
 
-// Auto-save changes to localStorage when inputs change
-container.addEventListener('input', (e) => {
+function renderSemester(key, data) {
+  const section = document.createElement('div');
+  section.innerHTML = `<h3>${key}</h3>`;
+
+  const deleteBtn = document.createElement('button');
+  deleteBtn.textContent = "Delete Semester";
+  deleteBtn.onclick = async () => {
+    if (confirm(`Delete semester ${key}?`)) {
+      await deleteDoc(doc(db, "semesters", key));
+      location.reload();
+    }
+  };
+  section.appendChild(deleteBtn);
+
+  Object.entries(data.classes || {}).forEach(([cls, clsData]) => {
+    const classBox = document.createElement('div');
+    classBox.innerHTML = `<h4>${cls}</h4>`;
+    const table = document.createElement('table');
+    table.innerHTML = `
+      <tr><th>Assignment</th><th>Grade (%)</th><th>Weight (%)</th><th>Due</th></tr>
+    `;
+
+    (clsData.assignments || []).forEach((a, i) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${a.name}</td>
+        <td><input type="number" value="${a.grade}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="grade"></td>
+        <td><input type="number" value="${a.weight}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="weight"></td>
+        <td><input type="date" value="${a.due || ''}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="due"></td>
+      `;
+      table.appendChild(row);
+    });
+
+    classBox.appendChild(table);
+    section.appendChild(classBox);
+  });
+
+  container.appendChild(section);
+}
+
+container.addEventListener('input', async (e) => {
   const input = e.target;
-  const semesterKey = container.querySelector('h3')?.textContent;
-  if (!semesterKey) return;
+  const { class: className, i, key, field } = input.dataset;
+  const newVal = field === 'due' ? input.value : parseFloat(input.value);
 
-  const className = input.dataset.class;
-  const index = input.dataset.index;
-  const field = input.dataset.field;
-  const value = field === "due" ? input.value : parseFloat(input.value);
+  const docRef = doc(db, "semesters", key);
+  const docSnap = await docRef.get();
+  if (!docSnap.exists()) return;
 
-  const data = JSON.parse(localStorage.getItem(semesterKey));
-  if (data && data.classes[className] && data.classes[className].assignments[index]) {
-    data.classes[className].assignments[index
+  const data = docSnap.data();
+  data.classes[className].assignments[i][field] = newVal;
+  await updateDoc(docRef, { classes: data.classes });
+});
+
+loadCurrentSemester();

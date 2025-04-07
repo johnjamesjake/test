@@ -1,7 +1,5 @@
-let semesters = {};
-let activeSemesterKey = "";
+import { collection, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
-// Populate year dropdown
 const yearSelect = document.getElementById('year');
 for (let y = 2018; y <= 2032; y++) {
   const opt = document.createElement('option');
@@ -10,8 +8,13 @@ for (let y = 2018; y <= 2032; y++) {
   yearSelect.appendChild(opt);
 }
 
-// Handle semester form
-document.getElementById('semesterForm').addEventListener('submit', function (e) {
+let activeSemesterKey = "";
+let semesterData = {
+  classes: {}
+};
+
+// Handle semester form submission
+document.getElementById('semesterForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
   const year = document.getElementById('year').value;
@@ -21,9 +24,8 @@ document.getElementById('semesterForm').addEventListener('submit', function (e) 
 
   if (!year || !label || !startDate || !endDate) return;
 
-  const key = `${year}-${label}`;
-  activeSemesterKey = key;
-  semesters[key] = {
+  activeSemesterKey = `${year}-${label}`;
+  semesterData = {
     year,
     label,
     startDate,
@@ -45,7 +47,7 @@ function renderClassSection() {
   `;
 }
 
-function addClass() {
+window.addClass = function () {
   const classId = `class-${Date.now()}`;
   const classEl = document.createElement('div');
   classEl.className = "class-block";
@@ -55,15 +57,15 @@ function addClass() {
       <div class="assignment-section">
         <h4>Assignments</h4>
         <div class="assignment-list"></div>
-        <button onclick="addAssignment('${classId}')">Add Assignment</button>
+        <button type="button" onclick="addAssignment('${classId}')">Add Assignment</button>
       </div>
-      <button onclick="collapseClass('${classId}')">Done</button>
+      <button type="button" onclick="collapseClass('${classId}')">Done</button>
     </div>
   `;
   document.getElementById('classContainer').appendChild(classEl);
-}
+};
 
-function addAssignment(classId) {
+window.addAssignment = function (classId) {
   const container = document.querySelector(`#${classId} .assignment-list`);
   const row = document.createElement('div');
   row.className = "assignment-row";
@@ -74,9 +76,9 @@ function addAssignment(classId) {
     <input type="date" class="a-date">
   `;
   container.appendChild(row);
-}
+};
 
-function collapseClass(classId) {
+window.collapseClass = function (classId) {
   const classBlock = document.getElementById(classId);
   const code = classBlock.querySelector('.class-code').value.trim();
   if (!code) return alert("Please enter a class code.");
@@ -93,19 +95,21 @@ function collapseClass(classId) {
     }
   });
 
-  semesters[activeSemesterKey].classes[code] = {
-    assignments
-  };
+  semesterData.classes[code] = { assignments };
 
-  // Collapse to summary view
   const collapsed = document.createElement('div');
   collapsed.textContent = code;
   classBlock.parentElement.replaceWith(collapsed);
-}
+};
 
-function finishSemester() {
-  if (!activeSemesterKey) return;
-  localStorage.setItem(activeSemesterKey, JSON.stringify(semesters[activeSemesterKey]));
-  alert(`Semester ${activeSemesterKey} saved.`);
-  location.reload(); // Refresh page to allow new entry
-}
+window.finishSemester = async function () {
+  try {
+    const docRef = doc(collection(db, "semesters"), activeSemesterKey);
+    await setDoc(docRef, semesterData);
+    alert(`Semester ${activeSemesterKey} saved to Firebase!`);
+    location.reload();
+  } catch (err) {
+    console.error("Error saving to Firebase:", err);
+    alert("Failed to save semester.");
+  }
+};
