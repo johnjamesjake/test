@@ -162,3 +162,19 @@ select {
 .assignment-row input {
   flex: 1;
 }
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+input[type="number"], input[type="date"] {
+  width: 100%;
+  padding: 0.3rem;
+}
