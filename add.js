@@ -1,7 +1,7 @@
 import { collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { db } from './firebase-init.js';
 
-// Populate dropdowns
+// Populate year dropdown (2018–2032)
 const yearSelect = document.getElementById('year');
 for (let y = 2018; y <= 2032; y++) {
   const opt = document.createElement('option');
@@ -10,6 +10,7 @@ for (let y = 2018; y <= 2032; y++) {
   yearSelect.appendChild(opt);
 }
 
+// Populate semester label dropdown
 const semesterLabelSelect = document.getElementById('label');
 ['Semester 1', 'Semester 2'].forEach(label => {
   const opt = document.createElement('option');
@@ -23,6 +24,7 @@ let semesterData = {
   classes: {}
 };
 
+// Handle Add Semester form submit
 document.getElementById('semesterForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
@@ -46,6 +48,7 @@ document.getElementById('semesterForm').addEventListener('submit', async functio
   renderClassSection();
 });
 
+// Display class/assignment UI
 function renderClassSection() {
   const container = document.getElementById('semesterList');
   container.innerHTML = `
@@ -56,6 +59,7 @@ function renderClassSection() {
   `;
 }
 
+// Add a new class block
 window.addClass = function () {
   const classId = `class-${Date.now()}`;
   const classEl = document.createElement('div');
@@ -74,6 +78,7 @@ window.addClass = function () {
   document.getElementById('classContainer').appendChild(classEl);
 };
 
+// Add assignment input row
 window.addAssignment = function (classId) {
   const container = document.querySelector(`#${classId} .assignment-list`);
   const row = document.createElement('div');
@@ -87,6 +92,7 @@ window.addAssignment = function (classId) {
   container.appendChild(row);
 };
 
+// Collapse class UI and store data
 window.collapseClass = function (classId) {
   const classBlock = document.getElementById(classId);
   const code = classBlock.querySelector('.class-code').value.trim();
@@ -111,6 +117,7 @@ window.collapseClass = function (classId) {
   classBlock.parentElement.replaceWith(collapsed);
 };
 
+// Save semester to Firebase
 window.finishSemester = async function () {
   try {
     const docRef = doc(collection(db, "semesters"), activeSemesterKey);
