@@ -1,74 +1,35 @@
-import { collection, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-const container = document.getElementById('previousSemesters');
-const today = new Date();
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { db } from './firebase-init.js';
 
 async function loadPreviousSemesters() {
+  const container = document.getElementById('previousDisplay');
+  container.innerHTML = '';
+
+  const today = new Date();
   const snapshot = await getDocs(collection(db, "semesters"));
 
   snapshot.forEach(docSnap => {
-    const key = docSnap.id;
     const data = docSnap.data();
-
     const end = new Date(data.endDate);
+
     if (end < today) {
-      renderSemester(key, data);
+      const div = document.createElement('div');
+      div.className = 'semester-block';
+      div.innerHTML = `<h3>${data.year} - ${data.label}</h3>`;
+
+      if (data.classes) {
+        const ul = document.createElement('ul');
+        Object.entries(data.classes).forEach(([code, details]) => {
+          const li = document.createElement('li');
+          li.textContent = code;
+          ul.appendChild(li);
+        });
+        div.appendChild(ul);
+      }
+
+      container.appendChild(div);
     }
   });
 }
-
-function renderSemester(key, data) {
-  const section = document.createElement('div');
-  section.innerHTML = `<h3>${key}</h3>`;
-
-  const deleteBtn = document.createElement('button');
-  deleteBtn.textContent = "Delete Semester";
-  deleteBtn.onclick = async () => {
-    if (confirm(`Delete semester ${key}?`)) {
-      await deleteDoc(doc(db, "semesters", key));
-      location.reload();
-    }
-  };
-  section.appendChild(deleteBtn);
-
-  Object.entries(data.classes || {}).forEach(([cls, clsData]) => {
-    const classBox = document.createElement('div');
-    classBox.innerHTML = `<h4>${cls}</h4>`;
-    const table = document.createElement('table');
-    table.innerHTML = `
-      <tr><th>Assignment</th><th>Grade (%)</th><th>Weight (%)</th><th>Due</th></tr>
-    `;
-
-    (clsData.assignments || []).forEach((a, i) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${a.name}</td>
-        <td><input type="number" value="${a.grade}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="grade"></td>
-        <td><input type="number" value="${a.weight}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="weight"></td>
-        <td><input type="date" value="${a.due || ''}" data-class="${cls}" data-i="${i}" data-key="${key}" data-field="due"></td>
-      `;
-      table.appendChild(row);
-    });
-
-    classBox.appendChild(table);
-    section.appendChild(classBox);
-  });
-
-  container.appendChild(section);
-}
-
-container.addEventListener('input', async (e) => {
-  const input = e.target;
-  const { class: className, i, key, field } = input.dataset;
-  const newVal = field === 'due' ? input.value : parseFloat(input.value);
-
-  const docRef = doc(db, "semesters", key);
-  const docSnap = await docRef.get();
-  if (!docSnap.exists()) return;
-
-  const data = docSnap.data();
-  data.classes[className].assignments[i][field] = newVal;
-  await updateDoc(docRef, { classes: data.classes });
-});
 
 loadPreviousSemesters();

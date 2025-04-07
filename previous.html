@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Previous Semesters | Grade Tracker</title>
+  <title>Previous Semesters</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav>
+  <header>
     <h1>Grade Tracker</h1>
-    <ul>
-      <li><a href="current.html">Current Semester</a></li>
-      <li><a href="add.html">Add</a></li>
-      <li><a href="previous.html">Previous Semesters</a></li>
-      <li><a href="wam.html">WAM Overview</a></li>
-      <li><a href="graphs.html">Graphs</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
-  </nav>
+    <nav>
+      <a href="current.html">Current Semester</a>
+      <a href="add.html">Add</a>
+      <a href="previous.html">Previous Semesters</a>
+      <a href="wam.html">WAM Overview</a>
+      <a href="graphs.html">Graphs</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
 
-  <div class="container">
-    <h2>Previous Semesters</h2>
-    <div id="previousSemesters"></div>
-  </div>
+  <main>
+    <div class="container">
+      <h2>Previous Semesters</h2>
+      <div id="previousDisplay">Loading previous semesters...</div>
+    </div>
+  </main>
 
   <script type="module" src="firebase-init.js"></script>
   <script type="module" src="previous.js"></script>
