@@ -16,6 +16,7 @@
       <li><a href="wam.html">WAM Overview</a></li>
       <li><a href="graphs.html">Graphs</a></li>
       <li><a href="settings.html">Settings</a></li>
+      <span id="userStatus" style="margin-left:auto;"></span>
     </ul>
   </nav>
 
@@ -25,3 +26,67 @@
   </div>
 </body>
 </html>
+
+<div id="loginModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Login or Register</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <br>
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
+  </div>
+</div>
+
+<script type="module">
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+  import { auth } from './firebase-init.js';
+
+  const userStatus = document.getElementById('userStatus');
+  const modal = document.getElementById('loginModal');
+  const closeModal = document.getElementById('closeModal');
+  const loginBtn = document.getElementById('loginBtn');
+  const registerBtn = document.getElementById('registerBtn');
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      userStatus.innerHTML = `
+        <span style="margin-right:10px;">👤 ${user.email}</span>
+        <button id="logoutBtn">Logout</button>
+      `;
+      document.getElementById("logoutBtn").onclick = () => signOut(auth);
+    } else {
+      userStatus.innerHTML = `<button id="openLogin">Login</button>`;
+      document.getElementById("openLogin").onclick = () => modal.style.display = "block";
+    }
+  });
+
+  closeModal.onclick = () => modal.style.display = "none";
+  window.onclick = e => { if (e.target === modal) modal.style.display = "none"; }
+
+  loginBtn.onclick = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("✅ Logged in!");
+      modal.style.display = "none";
+    } catch (err) {
+      alert("Login failed: " + err.message);
+    }
+  };
+
+  registerBtn.onclick = async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("✅ Registered and logged in!");
+      modal.style.display = "none";
+    } catch (err) {
+      alert("Registration failed: " + err.message);
+    }
+  };
+</script>
+
