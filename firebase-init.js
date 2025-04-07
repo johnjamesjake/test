@@ -20,3 +20,5 @@
   // Optional: expose db globally for testing
   window.db = db;
 </script>
+export { db };
+

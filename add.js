@@ -1,4 +1,5 @@
-import { collection, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { db } from './firebase-init.js';
 
 const yearSelect = document.getElementById('year');
 for (let y = 2018; y <= 2032; y++) {
@@ -13,7 +14,6 @@ let semesterData = {
   classes: {}
 };
 
-// Handle semester form submission
 document.getElementById('semesterForm').addEventListener('submit', async function (e) {
   e.preventDefault();
 
@@ -109,7 +109,7 @@ window.finishSemester = async function () {
     alert(`Semester ${activeSemesterKey} saved to Firebase!`);
     location.reload();
   } catch (err) {
-    console.error("Error saving to Firebase:", err);
-    alert("Failed to save semester.");
+    console.error("🔥 Error saving to Firebase:", err);
+    alert("Failed to save semester. Check console for details.");
   }
 };
