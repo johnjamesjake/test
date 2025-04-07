@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grades | Grade Tracker</title>
+  <title>Current Semester | Grade Tracker</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Navigation -->
   <nav>
     <h1>Grade Tracker</h1>
     <ul>
@@ -19,29 +18,12 @@
       <li><a href="settings.html">Settings</a></li>
     </ul>
   </nav>
-  
 
-  <!-- Main App Container -->
   <div class="container">
-    <div class="selectors">
-      <label for="yearSelect">Year:</label>
-      <select id="yearSelect">
-        <option value="">-- Select Year --</option>
-      </select>
-
-      <label for="semesterSelect">Semester:</label>
-      <select id="semesterSelect" disabled>
-        <option value="">-- Select Semester --</option>
-        <option value="Semester 1">Semester 1</option>
-        <option value="Semester 2">Semester 2</option>
-      </select>
-    </div>
-
-    <div id="contentArea">
-      <!-- Dynamic subject list appears here -->
-    </div>
+    <h2>Current Semester</h2>
+    <div id="currentSemester"></div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="current.js"></script>
 </body>
 </html>
