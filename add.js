@@ -1,6 +1,7 @@
 import { collection, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { db } from './firebase-init.js';
 
+// Populate dropdowns
 const yearSelect = document.getElementById('year');
 for (let y = 2018; y <= 2032; y++) {
   const opt = document.createElement('option');
@@ -8,6 +9,14 @@ for (let y = 2018; y <= 2032; y++) {
   opt.textContent = y;
   yearSelect.appendChild(opt);
 }
+
+const semesterLabelSelect = document.getElementById('label');
+['Semester 1', 'Semester 2'].forEach(label => {
+  const opt = document.createElement('option');
+  opt.value = label;
+  opt.textContent = label;
+  semesterLabelSelect.appendChild(opt);
+});
 
 let activeSemesterKey = "";
 let semesterData = {
@@ -18,13 +27,13 @@ document.getElementById('semesterForm').addEventListener('submit', async functio
   e.preventDefault();
 
   const year = document.getElementById('year').value;
-  const label = document.getElementById('label').value.trim();
+  const label = document.getElementById('label').value;
   const startDate = document.getElementById('startDate').value;
   const endDate = document.getElementById('endDate').value;
 
   if (!year || !label || !startDate || !endDate) return;
 
-  activeSemesterKey = `${year}-${label}`;
+  activeSemesterKey = `${year}-${label.replace(" ", "")}`;
   semesterData = {
     year,
     label,

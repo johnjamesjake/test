@@ -3,47 +3,47 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Add | Grade Tracker</title>
+  <title>Add Semester</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav>
+  <header>
     <h1>Grade Tracker</h1>
-    <ul>
-      <li><a href="current.html">Current Semester</a></li>
-      <li><a href="add.html">Add</a></li>
-      <li><a href="previous.html">Previous Semesters</a></li>
-      <li><a href="wam.html">WAM Overview</a></li>
-      <li><a href="graphs.html">Graphs</a></li>
-      <li><a href="settings.html">Settings</a></li>
-    </ul>
-  </nav>
+    <nav>
+      <a href="current.html">Current Semester</a>
+      <a href="add.html">Add</a>
+      <a href="previous.html">Previous Semesters</a>
+      <a href="wam.html">WAM Overview</a>
+      <a href="graphs.html">Graphs</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+  </header>
 
-  <div class="container">
-    <h2>Add New Semester</h2>
+  <main>
+    <div class="container">
+      <h2>Add New Semester</h2>
+      <form id="semesterForm">
+        <label for="year">Year:</label>
+        <select id="year" required></select>
 
-    <form id="semesterForm">
-      <label for="year">Year:</label>
-      <select id="year" required></select>
+        <label for="label">Semester Label:</label>
+        <select id="label" required></select>
 
-      <label for="label">Semester Label:</label>
-      <input type="text" id="label" placeholder="e.g. Semester 1" required>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" required>
 
-      <label for="startDate">Start Date:</label>
-      <input type="date" id="startDate" required>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" required>
 
-      <label for="endDate">End Date:</label>
-      <input type="date" id="endDate" required>
+        <button type="submit">Add Semester</button>
+      </form>
 
-      <button type="submit">Add Semester</button>
-    </form>
+      <div id="semesterList"></div>
+    </div>
+  </main>
 
-    <div id="semesterList"></div>
-  </div>
-
-  <!-- Firebase SDKs -->
+  <!-- Firebase & Script -->
   <script type="module" src="firebase-init.js"></script>
-  <!-- App logic -->
   <script type="module" src="add.js"></script>
 </body>
 </html>
