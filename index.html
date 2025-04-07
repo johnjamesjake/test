@@ -3,20 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Grade Tracker</title>
+  <title>University Grade Tracker</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>University Grade Tracker</h1>
+  <nav>
+    <h1>Grade Tracker</h1>
+    <ul>
+      <li><a href="#">Semesters</a></li>
+      <li><a href="#">WAM Overview</a></li>
+      <li><a href="#">Graphs</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
+  </nav>
 
+  <div class="container">
     <div class="selectors">
-      <label for="yearSelect">Select Year:</label>
+      <label for="yearSelect">Year:</label>
       <select id="yearSelect">
         <option value="">-- Select Year --</option>
       </select>
 
-      <label for="semesterSelect">Select Semester:</label>
+      <label for="semesterSelect">Semester:</label>
       <select id="semesterSelect" disabled>
         <option value="">-- Select Semester --</option>
         <option value="Semester 1">Semester 1</option>
@@ -25,7 +33,7 @@
     </div>
 
     <div id="contentArea">
-      <!-- Subjects + Assignments will go here -->
+      <!-- Subjects will appear here -->
     </div>
   </div>
 
